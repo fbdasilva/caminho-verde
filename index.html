@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caminho Verde</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div id="logo-div">
+      <img id="logo-ico" src="logo.ico" width="40">
+      <h1>Caminho Verde</h1>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="#" onclick="loadContent('inicio')">Início</a></li>
+            <li><a href="#" onclick="loadContent('page1')">Cards Informativos</a></li>
+            <li><a href="page2.html">Questionário</a></li>
+        </ul>
+    </nav>
+
+  </header>
+
+    <div id="content">
+        <div class="container-inicio">
+            <h2>Em busca de um futuro mais verde e sustentável através do conhecimento.</h2>
+        </div>
+    </div>
+
+
+    <script src="script.js"></script>
+
+    <script>
+        function loadContent(page) {
+            let contentDiv = document.getElementById('content');
+            if (page === 'inicio') {
+                contentDiv.innerHTML = '<div class="container-inicio"><h2>Em busca de um futuro mais verde e sustentável através do conhecimento.</h2></div>';
+            } else if (page === 'page1') {
+                fetch('page1.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        contentDiv.innerHTML = data;
+                    });
+            } else if (page === 'page2') {
+                fetch('page2.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        contentDiv.innerHTML = data;
+                    });
+            }
+        }
+    </script>
+</body>
+</html>
+

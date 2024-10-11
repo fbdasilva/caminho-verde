@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>questionario</title>
+    <style>
+        *{
+          margin: 0;
+          padding: 0;
+        }
+
+        body{
+          min-height: 100vh;
+          margin: 0;
+          padding: 0;
+          background: linear-gradient(to bottom, #5dff6a, #bfffd1);
+          color: rgb(9,36,75);
+          background: none;
+          font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+          row-gap: 0;
+        }
+
+        header{
+          min-height: 80px;
+          margin: 0;
+          border-bottom: 1px solid rgb(172, 151, 151);
+        }
+
+        header, nav ul, #logo-div{
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        #container-questionario, #container-resultado{
+            padding: 40px;
+        }
+
+        .container-opcao{
+            margin-bottom: 40px;
+        }
+
+        .container-opcao label{
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .container-nav-questoes{
+            display: flex;
+            column-gap: 10px;
+        }
+
+        .btn{
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            color: #fff;
+            font-weight: 600;
+            background-color: rgb(38, 117, 53);
+            cursor: pointer;
+            margin-bottom: 10px;
+            max-width: 150px;
+        }
+
+        .btn:hover{
+            background-color: rgb(77, 224, 119);
+        }
+
+        #logo-div{
+          margin-left: 40px;
+        }
+
+        nav ul{
+          list-style: none;
+          column-gap: 20px;
+          margin-right: 20px;
+        }
+
+        nav a{
+          font-weight: 600;
+          color: rgb(56, 151, 77);
+          text-decoration: none;
+        }
+
+        #logo-ico{
+          margin-right: 10px;
+          background-color: rgb(54, 225, 51);
+          border: 4px solid rgb(9,36,75);
+        }
+
+        
+        #titulo-pergunta{
+            color: rgb(29, 67, 29);
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+
+          h1{
+            font-size: 16px;
+          }
+
+          header, nav ul, #logo-div{
+            flex-direction: column;
+            margin: 0;
+            row-gap: 10px;
+          }
+
+          nav ul{
+            margin-bottom: 20px;
+          }
+
+          #logo-div{
+            margin-top: 10px;
+          }
+        }
+
+    </style>
+</head>
+<body>
+  <header>
+    <div id="logo-div">
+      <img id="logo-ico" src="logo.ico" width="40">
+      <h1>Caminho Verde</h1>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="index.html"">Início</a></li>
+            <li><a href="#">Questionário</a></li>
+        </ul>
+    </nav>
+
+  </header>
+    <div id="container-questionario">
+        <h2 id="titulo-pergunta"></h2>
+        <div class="container-opcao">
+            <label>
+                <input type="radio" name="option" value="A"> <span id="opcaoA"></span>
+            </label>
+            <label>
+                <input type="radio" name="option" value="B"> <span id="opcaoB"></span>
+            </label>
+            <label>
+                <input type="radio" name="option" value="C"> <span id="opcaoC"></span>
+            </label>
+        </div>
+        <div class="container-nav-questoes">
+            <button id="ant-btn" class="btn" onclick="navegarParaQuestaoAnterior()">Anterior</button>
+            <button id="prox-btn" class="btn" onclick="navegarParaProximaQuestao()">Próxima</button>
+            <button id="finalizar-btn" class="btn" onclick="finalizarQuestionario()">Finalizar</button>
+        </div>
+
+    </div>
+    <div id="container-resultado" class="hidden">
+        <h2>Resultado</h2>
+        <p id="pontos"></p>
+        <button id="reiniciar-btn" class="btn" onclick="reiniciarQuestionario()">Reiniciar</button>
+    </div>
+
+    <script>
+        const perguntas = [
+            {pergunta: "Qual a utilidade da lixeira de cor marrom?", A: "Descarte de materiais de papelão", B: "Descarte de materiais de com vidro", C:"Descarte de material orgânico", respostaCerta: "C"},
+            {pergunta: "Qual gás contribui para o aquecimento global?", A: "Oxigênio", B: "Gás Carbônico", C: "Gás Hidrogênio", respostaCerta: "B"},
+            {pergunta: "Qual dessas formas pode ser usada para evitar o desperdício de água?", A: "Reutilização da água", B: "Deixar o chuveiro ligado", C: "Deixar a torneira pingando", respostaCerta: "A"},
+            {pergunta: "Como proteger a biodiversidade?", A: "Jogar lixo na rua", B: "Reutilizar a água do banho", C: "Evitar desmatamento e queimadas", respostaCerta: "C"},
+            {pergunta: "Quantas categorias de descarte de lixo existem?", A: "5", B: "8", C: "10", respostaCerta: "C"}
+        ];
+
+        let indice_questao = 0;
+        let respostas_marcadas = [];
+        let questionario_finalizado = false;
+
+        function navegarParaQuestaoAnterior() {
+            if (indice_questao > 0){
+                salvarResposta();
+                indice_questao--;
+                carregarQuestao(indice_questao);
+                atualizarBotoes();
+            }
+        }
+
+        function navegarParaProximaQuestao() {
+            if (indice_questao < perguntas.length - 1){
+                salvarResposta();
+                indice_questao++;
+                carregarQuestao(indice_questao);
+                atualizarBotoes();
+            }
+        }
+
+        function carregarQuestao(index) {
+            const questionObj = perguntas[index];
+
+            // Adicionar pergunta e opções
+            document.getElementById('titulo-pergunta').innerText = questionObj.pergunta;
+            document.getElementById('opcaoA').innerText = questionObj.A;
+            document.getElementById('opcaoB').innerText = questionObj.B;
+            document.getElementById('opcaoC').innerText = questionObj.C;
+            const radios = document.querySelectorAll('input[name="option"]');
+            radios.forEach(radio => radio.checked = false);
+
+            if (respostas_marcadas[index] !== undefined) {
+                const selectedOption = respostas_marcadas[index];
+                document.querySelector(`input[name="option"][value="${selectedOption}"]`).checked = true;
+            }
+        }
+
+        function salvarResposta() {
+            const selectedOption = document.querySelector('input[name="option"]:checked');
+            if (selectedOption) {
+                respostas_marcadas[indice_questao] = selectedOption.value;
+            }
+        }
+
+        function atualizarBotoes() {
+            if (!questionario_finalizado) {
+                document.getElementById('ant-btn').style.display = indice_questao === 0 ? 'none' : 'inline-block';
+                document.getElementById('prox-btn').style.display = indice_questao === perguntas.length - 1 ? 'none' : 'inline-block';
+                document.getElementById('finalizar-btn').style.display = indice_questao === perguntas.length - 1 ? 'inline-block' : 'none';
+            }
+        }
+
+        function finalizarQuestionario() {
+            salvarResposta();
+
+            let correctAnswers = 0;
+            perguntas.forEach((pergunta, index) => {
+                if (respostas_marcadas[index] === pergunta.respostaCerta) {
+                    correctAnswers++;
+                }
+            });
+
+            document.getElementById('pontos').innerText = `Você acertou ${correctAnswers} de ${perguntas.length} perguntas.`;
+            document.getElementById('container-questionario').classList.add('hidden');
+            document.getElementById('container-resultado').classList.remove('hidden');
+
+            document.getElementById('ant-btn').style.display = 'none';
+            document.getElementById('prox-btn').style.display = 'none';
+            document.getElementById('finalizar-btn').style.display = 'none';
+
+            questionario_finalizado = true;
+        }
+
+        function reiniciarQuestionario() {
+            indice_questao = 0;
+            respostas_marcadas = [];
+            questionario_finalizado = false;
+
+            carregarQuestao(indice_questao);
+            atualizarBotoes();
+
+            document.getElementById('container-questionario').classList.remove('hidden');
+            document.getElementById('container-resultado').classList.add('hidden');
+            document.getElementById('finalizar-btn').classList.remove('hidden');
+        }
+
+        carregarQuestao(indice_questao);
+        atualizarBotoes();
+    </script>
+</body>
+</html>
+
+
+
